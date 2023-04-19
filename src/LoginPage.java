@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
 
 public class LoginPage extends JFrame {
     JLabel l1,l2;
@@ -61,7 +62,13 @@ public class LoginPage extends JFrame {
         b2.setForeground(Color.WHITE);
         add(b2);
 
-        b2.addActionListener(e2 -> setVisible(false));
+        b2.addActionListener(e2 -> {
+            try {
+                new SignUpPage();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 }
