@@ -64,6 +64,7 @@ public class LoginPage extends JFrame {
 
         b2.addActionListener(e2 -> {
             try {
+                setVisible(false);
                 new SignUpPage();
             } catch (ParseException e) {
                 throw new RuntimeException(e);
