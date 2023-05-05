@@ -60,7 +60,7 @@ public class LoginPage extends JFrame {
                     " \"password\":\""+ password.getText() +"\"\n" +
                     "}")) {
                setVisible(false);
-               new HomePage();
+               new HomePage(username.getText());
            } else {
                username.setText("");
                password.setText("");
