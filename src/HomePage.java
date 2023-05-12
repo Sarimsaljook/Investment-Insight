@@ -11,7 +11,7 @@ public class HomePage extends JFrame {
         setIconImage(new ImageIcon("II_logo.png").getImage());
         setVisible(true);
         getContentPane().setBackground(Color.WHITE);
-        setSize(810, 600);
+        setSize(810, 620);
         setLocation(400, 50);
 
         setLayout(null);
@@ -45,9 +45,21 @@ public class HomePage extends JFrame {
         addExpenseButton.setForeground(Color.white);
         add(addExpenseButton);
 
+        JButton setBudgetButton = new JButton("Set Budget");
+        setBudgetButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        setBudgetButton.setBounds(45, 500, 180, 50);
+        setBudgetButton.setBackground(new Color(224, 21, 87, 229));
+        setBudgetButton.setForeground(Color.white);
+        add(setBudgetButton);
+
         addExpenseButton.addActionListener(e -> {
             setVisible(false);
             new AddExpenseUI(username);
+        });
+
+        setBudgetButton.addActionListener(e2 -> {
+            setVisible(false);
+            new SetBudgetUI(username);
         });
     }
 }
