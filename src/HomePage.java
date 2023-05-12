@@ -1,6 +1,18 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class HomePage extends JFrame {
     public HomePage(String username) {
@@ -22,16 +34,19 @@ public class HomePage extends JFrame {
         add(label1);
 
         // Create the JTable with 3 columns
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"Title", "Amount", "Date"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"Expense", "Amount", "Date"}, 0);
         JTable jTable = new JTable(model);
 
+        JSONArray userExpenses = getUserExpenses(username);
+
         // Populate the JTable with data from the API
-      /*  for (JSONObject jsonObj : jsonData) {
-            String title = jsonObj.getString("expense_title");
-            double amount = jsonObj.getDouble("expense_amount");
-            String date = jsonObj.getString("expense_date");
+        for (Object userExpense : userExpenses) {
+            JSONObject jsonObj = (JSONObject) userExpense;
+            String title = (String) jsonObj.get("expense_title");
+            String amount = (String) jsonObj.get("expense_amount");
+            String date = (String) jsonObj.get("expense_date");
             model.addRow(new Object[]{title, amount, date});
-        } */
+        }
 
         // Add the JTable to the JFrame
         JScrollPane scrollPane = new JScrollPane(jTable);
@@ -61,5 +76,66 @@ public class HomePage extends JFrame {
             setVisible(false);
             new SetBudgetUI(username);
         });
+
+    }
+
+    public JSONArray getUserExpenses(String username) {
+        HttpURLConnection connection = null;
+        String finalResData;
+
+        JSONArray userExpenses = null;
+
+        String urlParameters = "{\n" +
+                "   \"user\": \""+username+"\"\n" +
+                "}";
+
+        try {
+            //Create connection
+            URL url = new URL("http://localhost:3001/getUserExpenses");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            connection.setRequestProperty("Content-Length",
+                    Integer.toString(urlParameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
+
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+            //Send request
+            DataOutputStream wr = new DataOutputStream (
+                    connection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.close();
+
+            //Get Response
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+
+            finalResData = response.toString();
+
+            JSONParser parse = new JSONParser();
+            JSONObject jobj = (JSONObject)parse.parse(finalResData);
+
+            userExpenses = (JSONArray) jobj.get("User's Expenses");
+
+            rd.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+                System.out.println("User's Expense Data retrieved");
+            }
+    }
+        return userExpenses;
     }
 }
