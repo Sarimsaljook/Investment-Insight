@@ -77,6 +77,27 @@ public class HomePage extends JFrame {
             new SetBudgetUI(username);
         });
 
+        JLabel label2 = new JLabel("This Month's Budget: " + getUserBudget(username));
+        label2.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+        label2.setBounds(340, 415, 400, 100);
+        add(label2);
+
+        int columnIndex = 1; // Specify the column index to sum (starting from 0)
+        double sum = 0.0;
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String value = model.getValueAt(i, columnIndex).toString();
+            value = value.replace("$", ""); // Remove dollar sign
+            sum += Double.parseDouble(value); // Convert to double and add to sum
+        }
+
+        System.out.println("Sum of budget column = $" + sum);
+
+        JLabel label3 = new JLabel("Current Total Expense: $" + sum);
+        label3.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+        label3.setBounds(340, 475, 400, 100);
+        add(label3);
+
     }
 
     public JSONArray getUserExpenses(String username) {
@@ -137,5 +158,65 @@ public class HomePage extends JFrame {
             }
     }
         return userExpenses;
+    }
+
+    public String getUserBudget(String username) {
+        HttpURLConnection connection = null;
+        String finalResData;
+
+        String userBudget = null;
+
+        String urlParameters = "{\n" +
+                "   \"user\": \""+username+"\"\n" +
+                "}";
+
+        try {
+            //Create connection
+            URL url = new URL("http://localhost:3001/getUserBudget");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            connection.setRequestProperty("Content-Length",
+                    Integer.toString(urlParameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
+
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+            //Send request
+            DataOutputStream wr = new DataOutputStream (
+                    connection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.close();
+
+            //Get Response
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+
+            finalResData = response.toString();
+
+            JSONParser parse = new JSONParser();
+            JSONObject jobj = (JSONObject)parse.parse(finalResData);
+
+            userBudget = jobj.get("User's Budget").toString();
+
+            rd.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+                System.out.println("User's Budget retrieved");
+            }
+        }
+        return userBudget;
     }
 }
