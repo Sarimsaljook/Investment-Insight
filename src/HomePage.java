@@ -84,6 +84,11 @@ public class HomePage extends JFrame {
             new SetBudgetUI(username);
         });
 
+        removeExpenseButton.addActionListener(e3 -> {
+            setVisible(false);
+            new DeleteExpenseUI(username);
+        });
+
         JLabel label2 = new JLabel("This Month's Budget: " + getUserBudget(username));
         label2.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
         label2.setBounds(340, 415, 400, 100);
