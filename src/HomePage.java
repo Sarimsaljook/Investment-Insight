@@ -23,7 +23,7 @@ public class HomePage extends JFrame {
         setIconImage(new ImageIcon("II_logo.png").getImage());
         setVisible(true);
         getContentPane().setBackground(Color.WHITE);
-        setSize(810, 620);
+        setSize(810, 680);
         setLocation(400, 50);
 
         setLayout(null);
@@ -53,7 +53,7 @@ public class HomePage extends JFrame {
         scrollPane.setBounds(45, 100, 700, 300);
         add(scrollPane, BorderLayout.CENTER);
 
-        JButton addExpenseButton = new JButton("Add Expense");
+        JButton addExpenseButton = new JButton("Add Expense +");
         addExpenseButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         addExpenseButton.setBounds(45, 425, 180, 50);
         addExpenseButton.setBackground(new Color(0, 173, 139, 141));
@@ -66,6 +66,13 @@ public class HomePage extends JFrame {
         setBudgetButton.setBackground(new Color(224, 21, 87, 229));
         setBudgetButton.setForeground(Color.white);
         add(setBudgetButton);
+
+        JButton removeExpenseButton = new JButton("Remove Expense X");
+        removeExpenseButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+        removeExpenseButton.setBounds(45, 575, 180, 50);
+        removeExpenseButton.setBackground(new Color(185, 71, 0, 229));
+        removeExpenseButton.setForeground(Color.white);
+        add(removeExpenseButton);
 
         addExpenseButton.addActionListener(e -> {
             setVisible(false);
@@ -92,6 +99,22 @@ public class HomePage extends JFrame {
         }
 
         System.out.println("Sum of budget column = $" + sum);
+
+        String userBudget = getUserBudget(username);
+        userBudget = userBudget.replace("$", "");
+        userBudget = userBudget.replace(",", "");
+
+        boolean overBudget = (sum > Double.parseDouble(userBudget));
+
+        if (overBudget) {
+            //DISPLAY OVER SPENDING WARNINGS
+            JOptionPane.showMessageDialog(null, "YOU HAVE GONE OVER BUDGET FOR THIS MONTH", null, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "AS A RESULT YOUR ADD EXPENSE OPTION HAS BEEN DISABLES UNTIL NEXT MONTH");
+            JOptionPane.showMessageDialog(null, "THIS IS SO YOU CAN LEARN TO CONTROL YOUR SPENDING HABITS");
+
+            //Disable Button
+            addExpenseButton.setEnabled(false);
+        }
 
         JLabel label3 = new JLabel("Current Total Expense: $" + sum);
         label3.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
