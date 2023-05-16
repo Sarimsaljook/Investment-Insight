@@ -12,7 +12,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimerTask;
 
 public class HomePage extends JFrame {
     public HomePage(String username) {
@@ -114,7 +117,7 @@ public class HomePage extends JFrame {
         if (overBudget) {
             //DISPLAY OVER SPENDING WARNINGS
             JOptionPane.showMessageDialog(null, "YOU HAVE GONE OVER BUDGET FOR THIS MONTH", null, JOptionPane.WARNING_MESSAGE);
-            JOptionPane.showMessageDialog(null, "AS A RESULT YOUR ADD EXPENSE OPTION HAS BEEN DISABLES UNTIL NEXT MONTH");
+            JOptionPane.showMessageDialog(null, "AS A RESULT YOUR ADD EXPENSE OPTION HAS BEEN DISABLED UNTIL NEXT MONTH");
             JOptionPane.showMessageDialog(null, "THIS IS SO YOU CAN LEARN TO CONTROL YOUR SPENDING HABITS");
 
             //Disable Button
@@ -126,6 +129,18 @@ public class HomePage extends JFrame {
         label3.setBounds(340, 475, 400, 100);
         add(label3);
 
+        // Set the initial delay to the start of the next month
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime nextMonth = currentTime.plusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        long initialDelay = java.time.Duration.between(currentTime, nextMonth).toMillis();
+
+        // Create a timer task to execute every month
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+
+            }
+        };
     }
 
     public JSONArray getUserExpenses(String username) {
