@@ -18,6 +18,12 @@ import java.util.Date;
 import java.util.TimerTask;
 
 public class HomePage extends JFrame {
+    static JMenuBar mb;
+    static JMenu x;
+
+    // Menu items
+    static JMenuItem m1, m2, m3;
+
     public HomePage(String username) {
         //Frame Init
         setTitle("Home");
@@ -26,7 +32,7 @@ public class HomePage extends JFrame {
         setIconImage(new ImageIcon("II_logo.png").getImage());
         setVisible(true);
         getContentPane().setBackground(Color.WHITE);
-        setSize(810, 680);
+        setSize(850, 680);
         setLocation(400, 50);
 
         setLayout(null);
@@ -141,6 +147,30 @@ public class HomePage extends JFrame {
 
             }
         };
+
+        mb = new JMenuBar();
+
+        // create a menu
+        x = new JMenu("Account");
+
+        // create menuitems
+        m1 = new JMenuItem("Logout");
+        m1.setForeground(Color.RED);
+
+        JMenu aboutUs = new JMenu("About Us");
+
+
+
+        // add menu items to menu
+        x.add(m1);
+        x.add(m2);
+        x.add(m3);
+
+        // add menu to menu bar
+        mb.add(x);
+
+        // add menubar to frame
+        setJMenuBar(mb);
     }
 
     public JSONArray getUserExpenses(String username) {
